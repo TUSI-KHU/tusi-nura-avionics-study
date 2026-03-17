@@ -7,6 +7,7 @@
 - `flight.csv` 파일에 헤더를 1회 작성합니다.
 - 100ms 주기로 한 줄씩 append 합니다.
 - 컬럼: `millis,state,accMag,relAlt`
+- `delay()` 대신 `millis()`를 사용해야 합니다.
 
 ## 구현 방향
 template.ino의 `TODO 1 -> TODO 2 -> TODO 3` 순서로 진행합니다.
