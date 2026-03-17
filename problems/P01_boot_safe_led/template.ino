@@ -29,9 +29,13 @@ void loop() {
   unsigned long now = millis();
 
   // TODO 1: BOOT 상태
+  // STEP 1) 먼저 state가 BOOT일 때만 동작하도록 분기하세요.
+  // STEP 2) 점멸 타이머를 비교해서 200ms마다 LED 상태를 반전하세요.
+  // STEP 3) BOOT 진입 후 3초가 지났는지 확인해서 SAFE로 전환하세요.
   // - now - lastBlinkMs >= 200 이면 LED 토글
   // - now - stateEnterMs >= 3000 이면 SAFE로 전이
 
   // TODO 2: SAFE 상태
+  // STEP 4) SAFE에서는 조건 없이 LED를 항상 켠 상태로 유지하세요.
   // - LED를 HIGH로 유지
 }

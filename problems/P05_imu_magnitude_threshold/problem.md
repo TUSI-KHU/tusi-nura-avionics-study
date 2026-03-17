@@ -7,6 +7,7 @@
 - 가속도 크기 `mag = sqrt(ax*ax + ay*ay + az*az)`를 계산합니다.
 - 계산한 `mag`를 주기 출력합니다.
 - `mag > THRESHOLD` 여부를 함께 출력합니다.
+- `delay()` 대신 `millis()`를 사용해야 합니다.
 
 ## 구현 방향
 template.ino의 `TODO 1 -> TODO 2 -> TODO 3` 순서로 진행합니다.

@@ -7,6 +7,7 @@ P10 코드에 P12의 SD 로깅 함수를 결합하세요.
 - 상태머신(BOOT~RECOVERY)은 기존처럼 동작해야 합니다.
 - SD 실패 시에도 상태머신은 계속 동작해야 합니다.
 - 100ms마다 `millis,state,accMag,relAlt`를 기록합니다.
+- `delay()` 대신 `millis()`를 사용해야 합니다.
 
 ## 구현 방향
 template.ino의 `TODO 1 -> TODO 2 -> TODO 3 -> TODO 4` 순서로 진행합니다.

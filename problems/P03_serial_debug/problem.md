@@ -7,6 +7,7 @@
 - 100ms 간격으로 로그를 출력합니다.
 - 로그에는 `millis`, 상태 문자열, 버튼 값을 포함합니다.
 - 출력 형식은 예시처럼 통일합니다: `[DBG] t=1234 state=SAFE btn=1`
+- `delay()` 대신 `millis()`를 사용해야 합니다.
 
 ## 구현 방향
 template.ino의 `stateToStr TODO -> TODO 1 -> TODO 2 -> TODO 3` 순서로 진행합니다.

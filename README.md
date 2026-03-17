@@ -1,58 +1,127 @@
-# 2주 미니 Flight Computer 학습 자료
+# TUSI-NURA Avionics Study Guide
 
-이 저장소는 아두이노 입문자를 위한 단계형 실습 자료입니다.
+이 저장소는 **초보자도 단계별 TODO를 따라가며 비행 컨트롤러 상태머신을 완성**하도록 설계된 학습 코스입니다.
 
-핵심 설계 원칙:
-- 각 문제는 **독립 실행 가능한 미니 프로젝트**입니다.
-- 학생이 반드시 하나의 거대한 코드베이스를 계속 이어서 쓰지 않아도 됩니다.
-- 각 문제 폴더는 아래 3개 파일로 구성됩니다.
-  - `problem.md`: 코딩테스트형 문제지
-  - `template.ino`: 시작 코드(빈칸/TODO 포함)
-  - `answer.ino`: 정답 예시 코드(초보자용 설명 주석 포함)
+## 1) 목표
+- C/Arduino 기초 문법으로 상태 기반 제어를 구현한다.
+- 센서(IMU, BARO) 데이터를 읽고 전이 조건으로 활용한다.
+- SD 로그를 통해 동작을 검증 가능한 형태로 남긴다.
+- 최종적으로 `BOOT -> SAFE -> ARMED -> FLIGHT -> RECOVERY` 흐름을 1회 이상 재현한다.
 
-## 폴더 구성
+## 2) 저장소 구조
+- `problems/Pxx_.../template.ino`: 학습자가 작성할 템플릿
+- `problems/Pxx_.../problem.md`: 문제 설명/요구사항
+- `answers/Pxx_.../answer.ino`: 참고 정답(자력 구현 후 비교 권장)
 
-- `docs/learner_guide.md`: 학습자용 가이드(학습 순서 + 기초 설명)
-- `problems/P01_boot_safe_led/`
-- `problems/P02_arm_button_buzzer/`
-- `problems/P03_serial_debug/`
-- `problems/P04_read_mpu6050/`
-- `problems/P05_imu_magnitude_threshold/`
-- `problems/P06_launch_detection_flight_transition/`
-- `problems/P07_read_bmp180_altitude/`
-- `problems/P08_recovery_transition/`
-- `problems/P09_recovery_altitude/`
-- `problems/P10_basic_integration/`
-- `problems/P11_sd_basic_check/`
-- `problems/P12_sd_flight_logging/`
-- `problems/P13_integration_with_sd/`
-- `problems/P14_full_system_check/`
+권장 순서: **P01 -> P14** 순차 진행
 
-## 권장 학습 방식
+## 3) 하드웨어/기본 연결 체크
+학습 시작 전에 아래 하드웨어 연결을 먼저 점검하세요.
 
-1. `problem.md`를 먼저 읽고 목표를 확인합니다.
-2. `template.ino`의 TODO를 순서대로 채웁니다.
-3. 업로드 후 시리얼 모니터로 동작을 확인합니다.
-4. 막히면 `answer.ino`와 비교해서 차이를 찾습니다.
-5. 마지막(P14)에서 전체 기능을 점검합니다.
+- LED: `D8`
+- Button: `D4` (`INPUT_PULLUP` 기준: 눌림=LOW)
+- Buzzer: `D9`
+- SD module CS: `D10`
+- I2C: `A4=SDA`, `A5=SCL`
+- MPU6050: I2C 연결
+- BMP180: I2C 연결
 
-## 단계별 학습 경로 (총 14문제)
+## 4) 라이브러리 체크리스트
+아래 라이브러리가 준비되어 있어야 합니다.
 
-각 폴더는 분리되어 있지만, 학습 흐름은 아래처럼 "천천히 진화"하도록 설계되어 있습니다.
+- `Wire.h`
+- `SPI.h`
+- `SD.h`
+- `Adafruit_MPU6050.h`
+- `Adafruit_Sensor.h`
+- `Adafruit_BMP085.h`
 
-1. `P01`: BOOT/SAFE LED 상태 표현
-2. `P02`: 버튼 입력과 버저 피드백 추가
-3. `P03`: 상태/입력 시리얼 관측 추가
-4. `P04`: IMU 센서 입력 채널 추가
-5. `P05`: IMU 크기값과 이벤트 후보 판정 추가
-6. `P06`: 가속도 조건으로 ARMED -> FLIGHT 전이
-7. `P07`: BARO 상대고도 채널 추가
-8. `P08`: 시간 조건 RECOVERY 전이
-9. `P09`: 고도 조건 RECOVERY 전이
-10. `P10`: 기본 기능 통합 (상태/센서/전이, SD 제외)
-11. `P11`: SD 기본 동작 확인
-12. `P12`: SD 로그 저장 연습
-13. `P13`: 기본 기능 + SD 통합
-14. `P14`: 전체 동작 점검
+## 5) 학습 규칙 (중요)
+- 각 문제는 **template.ino의 TODO 순서대로**만 진행하세요.
+- 한 TODO를 끝낼 때마다 바로 업로드/실행 검증하세요.
+- 문제를 건너뛰지 마세요. 특히 P04~P09 기반이 P10에 직접 연결됩니다.
+- 정답 파일은 막힐 때 비교용으로만 사용하세요.
 
-즉, 폴더는 독립 제출용이지만 내용은 FC 목표로 이어지는 순차 구조입니다.
+## 6) 문제별 로드맵 + 최소 통과 기준
+
+### P01~P03: 상태/입력/디버그 기초
+- P01: BOOT 점멸 후 SAFE 고정 LED
+- P02: 버튼 롱프레스 SAFE/ARMED 토글 + 버저 피드백
+- P03: 100ms 디버그 출력(시간/상태/버튼)
+
+통과 기준:
+- LED/버튼/버저/시리얼이 각각 의도대로 반응
+- `millis()` 기반 주기 제어 사용
+
+### P04~P07: 센서 읽기와 전처리
+- P04: MPU6050 초기화 + 가속도 출력
+- P05: `mag` 계산 + 임계치 비교
+- P06: `ARMED -> FLIGHT` (임계치 + 유지시간)
+- P07: BMP180 기준고도(`alt0`) 캘리브레이션 + `relAlt`
+
+통과 기준:
+- 센서 실패 시 에러 처리 가능
+- 흔들기/기울이기에 따라 값이 변화
+- 캘리브레이션 이후 상대고도가 0 근처에서 시작
+
+### P08~P09: RECOVERY 전이 강화
+- P08: 시간 기반 `FLIGHT -> RECOVERY`
+- P09: 고도 하강량 기반 전이 + 시간 백업 전이 유지
+
+통과 기준:
+- ALT 조건/시간 조건 둘 다 동작
+- 전이 reason 로그로 원인 식별 가능
+
+### P10: 코어 통합(SD 제외)
+- 지금까지 기능을 하나의 상태머신으로 통합
+
+통과 기준:
+- 전체 상태 흐름이 끊기지 않고 진행
+- 디버그/LED 표시 일관성 유지
+
+### P11~P13: SD 로깅
+- P11: SD 기본 쓰기 확인
+- P12: CSV 헤더 + 100ms 주기 기록
+- P13: 상태머신 + SD 통합 (SD 실패 시에도 상태머신 계속)
+
+통과 기준:
+- `flight.csv` 생성/누적
+- CSV 컬럼 순서 유지: `millis,state,accMag,relAlt`
+- SD 오류가 있어도 코어 상태머신은 멈추지 않음
+
+### P14: 최종 시스템 점검
+- 상태/표시/로그를 운영 관점에서 확인
+
+통과 기준:
+- `BOOT -> SAFE -> ARMED -> FLIGHT -> RECOVERY` 1회 이상 완주
+- 전이마다 reason 로그 존재
+- LED와 시리얼 로그가 상태와 모순되지 않음
+
+## 7) 문제 풀이 방법(권장)
+1. 해당 `template.ino` 열기
+2. TODO 1만 구현
+3. 업로드 후 동작 확인
+4. 통과하면 각 TODO 구현 후 업로드 및 테스트 반복
+5. 마지막 TODO까지 완료 후 `answer.ino`와 비교
+
+권장 기록:
+- 무엇을 바꿨는지
+- 기대 동작 vs 실제 동작
+- 실패 원인/수정 내용
+
+## 8) 통합 단계 디버깅 우선순위
+특히 P10/P13/P14에서 아래 순서로 디버깅하세요.
+
+1. **상태 전이 로그**: 전이가 언제/왜 일어났는지 먼저 확인
+2. **LED/버저 표시**: 상태 표시가 실제 state와 일치하는지 확인
+3. **센서 값**: `accMag`, `relAlt`, `maxRelAlt`가 정상 범위인지 확인
+4. **SD 로그**: 헤더/주기/컬럼 순서 확인
+
+앞 단계가 깨지면 뒤 단계 점검은 보류하고 먼저 앞 단계를 고치세요.
+
+## 9) 자주 발생하는 문제와 해결 방향
+- 버튼이 반대로 동작: `INPUT_PULLUP` 논리(LOW=눌림) 재확인
+- 한 번 눌렀는데 여러 번 토글: 엣지 감지/hold 잠금 플래그 확인
+- 센서 초기화 실패: 전원/GND/I2C 배선 재확인
+- 전이가 너무 빠름/느림: 임계치, HOLD_MS, 타이머 초기화 위치 확인
+- SD는 되는데 상태가 멈춤: SD 실패를 치명 에러로 처리하지 않았는지 확인
